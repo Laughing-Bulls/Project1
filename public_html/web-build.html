@@ -1,0 +1,75 @@
+<html>
+	<head>.
+		<title>How to Make and Host Website - Project 1</title>
+	</head>
+	<body>
+		<h1>IS 601 Project 1 – How to Make and Host Website</h1>
+		
+		<h3>	This website was created by the Linux vi editor and is hosted on Azure Cloud<br>
+			This page summarizeis steps for making a website, building a container, and using Azure as the web server.</h3>
+		
+		<pre>	
+
+		<h2>     Create/get the web files</h2>		
+			
+			- Typically clone GitHub repository 
+			- - git clone &ltGitHub url&gt
+			- Can create new .html from vi editor
+			- - git init &ltreponame&gt  [initialize a new repository]
+			- - vi index.html  [make content]
+			- - git add &ltindex.html&gt  [add file(s) to staging area]
+			- - git commit -m “Initial commit”  [commit message]
+			- - git commit -a  [commits added and changed files]
+			- - git branch -M main
+			- - git remote add origin &lthttps://github.com/…&gt  [remote to GitHub]
+			- - git push -u origin main [add to GitHub]
+
+		<h2>     Build container image on local</h2>
+			- Create Dockerfile with vi editor (no extension)
+			- - FROM httpd:2.4
+			- - COPY ./public_html/ /usr/local/apache2/htdocs/  
+			- - [public_html/ is the directory where the html files reside on local machine]
+			- Create docker-compose.yml file
+			- - version: "3.2"
+			- - services:
+			- -   apache:
+			- -     build: .
+			- -     ports:
+			- -       - "8080:80"
+			- -     volumes:
+			- -       - ./public_html/:/usr/local/apache2/htdocs/ 
+			- docker compose up -d  [builds docker image based on yml script]
+			- ALTERNATE: docker build -t <html-server-image:v1> .[dot]  [build docker image for HTML server]
+			- docker images  [confirm successful build]
+			- ALTERNATE: docker run -d -p 80:80 <html-server-image:v1>  [run docker container]
+			- Check browser to see if server is running - “localhost” 
+			- docker stop <container name>
+
+		<h2>     Make repository on docker.com</h2>
+			- “Create Repository” button and name &ltnew_repo_name&gt
+
+		<h2>     Push image to the DockerHub repo</h2>
+			- [docker login -u &ltusername&gt]
+			- docker tag &lthtml-server-image:v1&gt &ltusername/new_repo_name&gt
+			- docker push &ltusername/new_repo_name&gt  [to push image to DockerHub]
+			- Verify that the image is in the repository on hub.docker.com
+
+		<h2>     Pull image from docker registry to run on Azure Cloud </h2>
+			- docker login azure  [Log into Azure]
+			- docker context create aci &ltazurecloud&gt  [create an ACI context]
+			- docker context ls  [list your Docker contexts]
+			- - [May have to switch to PowerShell for this]
+			- docker context use &ltazurecloud&gt
+			- (?) docker run -p 80:80 nginx
+			- docker run -p 80:80 &ltusername/new_repo_name&gt
+			- docker ps  [list the containers running on ACI]
+			- docker stop <container-ID>  [stop container]
+			- docker rm <container-ID>  [remove container]
+
+
+		</pre>
+
+	</body>
+
+</html>
+
